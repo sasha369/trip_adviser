@@ -14,6 +14,5 @@ class TripSerializer(serializers.ModelSerializer):
             )
         return attrs
 
-
-"""class GoalSerializer(serializers.ModelSerializer):
-    day_id = """
+class GoalSerializer(serializers.ModelSerializer):
+    day_id = 

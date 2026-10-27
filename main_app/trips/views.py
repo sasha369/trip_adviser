@@ -2,6 +2,7 @@ from core.views import OwnedViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .serializers import TripSerializer
+from .models import Trip
 
 
 class TripViewSet(OwnedViewSet):

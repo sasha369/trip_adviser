@@ -222,3 +222,5 @@ __marimo__/
 # CUSTOM
 
 .vscode
+.opencode
+docs

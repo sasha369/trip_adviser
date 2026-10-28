@@ -1,5 +1,5 @@
-from rest_framework.views import exception_handler as drf_handler
 from rest_framework.exceptions import APIException
+from rest_framework.views import exception_handler as drf_handler
 
 
 class DomainError(APIException):

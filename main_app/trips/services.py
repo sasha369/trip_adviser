@@ -1,9 +1,8 @@
 from datetime import timedelta
 from urllib.parse import quote_plus
 
-from django.db import transaction
-
 from core.exceptions import DomainError
+from django.db import transaction
 
 from .models import Day, Goal, Trip
 
@@ -135,3 +134,60 @@ def route_options(trip: Trip) -> dict:
             },
         ],
     }
+
+
+# -------- Цели --------
+
+
+def next_sort_order(day: Day, exclude: Goal | None = None) -> int:
+    qs = day.goals.all()
+    if exclude is not None:
+        qs = qs.exclude(pk=exclude.pk)
+    last = qs.order_by("-sort_order").first()  # самая большая sort_order
+    return last.sort_order + GAP if last else 0
+
+
+def reindex_day(day: Day) -> None:
+    """Изменение sort_order целей дня после вставок/переносов"""
+    changed = []
+    for i, goal in enumerate(
+        day.goals.order_by("sort_order", "id")
+    ):  # после вставок/переносов промежутки кончаются (15, 17, 18, 19…), и переиндексация «схлопывает» день обратно к 0/10/20.
+        order = i * GAP
+        if goal.sort_order != order:
+            goal.sort_order = order
+            changed.append(goal)
+    if changed:
+        Goal.objects.bulk_update(changed, ["sort_order"])
+
+
+def create_goal(*, day: Day, data: dict, sort_order: int | None = None) -> Goal:
+    if sort_order is None:
+        sort_order = next_sort_order(day)
+    return Goal.objects.create(day=day, sort_order=sort_order, **data)
+
+
+def update_goal(
+    goal: Goal, *, data: dict, day: Day, sort_order: int | None = None
+) -> Goal:
+    with transaction.atomic():
+        if day.trip_id != goal.day.trip_id:
+            raise DomainError(
+                "cross_trip_move",
+                "Цель нельзя перенести в день другой поездки",
+                {"day_id": ["other_trip"]},
+            )
+        old_day = goal.day
+        for field, value in data.items():
+            setattr(goal, field, value)
+
+        goal.day = day
+        if sort_order is not None:  # клиент задал позицию — ставим её
+            goal.sort_order = sort_order
+        elif day.pk != old_day.pk:  # день сменился, позиции нет — в конец нового дня
+            goal.sort_order = next_sort_order(day, exclude=goal)
+        goal.save()
+        reindex_day(day)
+        if old_day.pk != day.pk:
+            reindex_day(old_day)
+    return goal

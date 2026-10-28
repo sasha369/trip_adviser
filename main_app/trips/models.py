@@ -1,6 +1,7 @@
 """Модель путешествия и его содержания: дни, билеты, список вещей"""
 
 import uuid
+
 from django.conf import settings
 from django.db import models
 from django.utils import timezone

@@ -3,7 +3,7 @@ psycopg2==2.9.13
 gunicorn==26.2.0
 python-dotenv==1.2.4
 djangorestframework==3.18.3
-djangorestframework-simplejw==5.5.1
+djangorestframework-simplejwt==5.5.1
 celery==5.6.3
 sentry-sdk==2.73.0
 python-json-logger==4.2.0

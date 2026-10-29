@@ -19,6 +19,8 @@ from .serializers import (
     TripSerializer,
 )
 
+"""Вьюхи в drf - это api endpoints, готовый набор всех операций по определенному пути."""
+
 
 class TripViewSet(OwnedViewSet):
     """§7: /api/trips — CRUD, фильтр по статусу, copy, route-options."""

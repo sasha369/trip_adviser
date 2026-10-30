@@ -71,11 +71,11 @@ class Ticket(models.Model):
     ticket_file_link = models.URLField(
         _("ticket file link"), max_length=200, blank=True, null=True
     )
-    assigned_to = (
-        models.ForeignKey(
+    travelers = (
+        models.ManyToManyField(
             "accounts.Traveler",
             verbose_name=_("traveler"),
-            on_delete=models.CASCADE,
+            blank=True,
             related_name="tickets",
         ),
     )

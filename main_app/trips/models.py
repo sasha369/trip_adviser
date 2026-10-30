@@ -89,7 +89,7 @@ class Goal(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     day = models.ForeignKey(
-        Day, on_delete=models.CASCADE, related_name="goals", verbose_name=_("goal")
+        Day, on_delete=models.CASCADE, related_name="goals", verbose_name=_("day")
     )
     title = models.CharField(max_length=200)
     description = models.TextField(max_length=2000, blank=True)

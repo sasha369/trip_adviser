@@ -79,6 +79,7 @@ class Ticket(models.Model):
             related_name="tickets",
         ),
     )
+    order = models.PositiveIntegerField(_("order"), default=0, db_index=True)
 
     class Meta:
         verbose_name = _("Ticket")

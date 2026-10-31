@@ -28,6 +28,7 @@ class TicketSerializer(serializers.ModelSerializer):
             "route_number",
             "seat",
             "travelers",
+            "order",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -37,3 +38,12 @@ class TicketSerializer(serializers.ModelSerializer):
             self.fields["travelers"].child_relation.queryset = Traveler.objects.filter(
                 user=request.user
             )
+
+    def validate(self, attrs):
+        depart = attrs.get("departure_at", getattr(self.instance, "departure_at", None))
+        arrive = attrs.get("arrival_at", getattr(self.instance, "arrival_at", None))
+        if depart and arrive and depart >= arrive:
+            raise serializers.ValidationError(
+                {"departure_at": "Дата вылета должна быть раньше даты прилета"}
+            )
+        return attrs

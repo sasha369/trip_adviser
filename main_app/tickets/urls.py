@@ -13,13 +13,13 @@ router.register("tickets", TicketsViewSet, basename="tickets")
 
 urlpatterns = [
     path(
-        "trips/{uuid:trip_id}/tickets/",
+        "trips/<uuid:trip_id>/tickets/",
         TripTicketListCreateView.as_view(),
         name="trip-tickets",
     ),
     path("tickets/extract/", ExtractView.as_view(), name="ticket-extract"),
     path(
-        "ticket/extract/{uuid:task_id}",
+        "ticket/extract/<str:task_id>",
         ExtractResultView.as_view(),
         name="ticket-extract-result",
     ),

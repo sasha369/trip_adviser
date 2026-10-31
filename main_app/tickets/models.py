@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 
@@ -26,6 +27,13 @@ class TicketGroup(models.Model):
     class Meta:
         verbose_name = _("TicketGroup")
         verbose_name_plural = _("TicketGroups")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["trip", "direction"],
+                condition=Q(direction__in=["outbound", "return"]),
+                name="unique_main_direction__per_trip",
+            )
+        ]
 
     def __str__(self):
         return f"{self.trip} - {self.direction}"
@@ -71,19 +79,18 @@ class Ticket(models.Model):
     ticket_file_link = models.URLField(
         _("ticket file link"), max_length=200, blank=True, null=True
     )
-    travelers = (
-        models.ManyToManyField(
-            "accounts.Traveler",
-            verbose_name=_("traveler"),
-            blank=True,
-            related_name="tickets",
-        ),
+    travelers = models.ManyToManyField(
+        "accounts.Traveler",
+        verbose_name=_("traveler"),
+        blank=True,
+        related_name="tickets",
     )
     order = models.PositiveIntegerField(_("order"), default=0, db_index=True)
 
     class Meta:
         verbose_name = _("Ticket")
         verbose_name_plural = _("Tickets")
+        ordering = ["order", "id"]
 
     def __str__(self):
         return f"{self.group} - {self.route_number}"

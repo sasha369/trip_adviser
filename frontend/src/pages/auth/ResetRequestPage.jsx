@@ -12,6 +12,7 @@ export function ResetRequestPage() {
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
+  const [sentDetail, setSentDetail] = useState(null)
   const [detail, setDetail] = useState(null)
   const [fields, setFields] = useState({})
   const [submitting, setSubmitting] = useState(false)
@@ -22,8 +23,9 @@ export function ResetRequestPage() {
     setFields({})
     setSubmitting(true)
     try {
-      await authApi.requestReset(email)
+      const res = await authApi.requestReset(email)
       // Токен «не найден» → 400 email_not_found (design §4 S1). Успех → success-состояние.
+      setSentDetail(res.data?.detail ?? null)
       setSent(true)
     } catch (err) {
       const n = extractError(err)
@@ -39,7 +41,9 @@ export function ResetRequestPage() {
       {detail && <Alert kind="error" title={detail} />}
       {sent ? (
         <>
-          <Alert kind="success" title={t('auth.reset_sent')} />
+          <Alert kind="success" title={t('auth.reset_sent')}>
+            {sentDetail}
+          </Alert>
           <p className="t-meta" style={{ textAlign: 'center' }}>
             <Link to="/reset/confirm">{t('auth.token')}</Link>
             <span style={{ margin: '0 8px' }}>·</span>

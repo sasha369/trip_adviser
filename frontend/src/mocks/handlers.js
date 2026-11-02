@@ -83,8 +83,10 @@ export const handlers = [
     if (!user) {
       return json({ code: 'email_not_found', detail: 'Пользователь с таким email не найден', fields: {} }, 400)
     }
-    createResetToken(user.id)
-    return json({ detail: 'Если email существует, письмо со ссылкой отправлено' })
+    const token = createResetToken(user.id)
+    // В моке «письмо» показываем код прямо в ответе — иначе до confirm не добраться.
+    // В реальном API токен придёт по ссылке из письма.
+    return json({ detail: `Если email существует, письмо со ссылкой отправлено (Мок: код для confirm — ${token})` })
   }),
 
   http.post('*/api/auth/reset/confirm', async ({ request }) => {

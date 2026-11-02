@@ -7,12 +7,11 @@ import { TextField } from '../../components/ui/TextField'
 import { Alert } from '../../components/ui/Alert'
 import { authApi } from '../../api/authApi'
 import { extractError } from '../../api/client'
-import { useAuth } from '../../stores/authStore'
+import { adoptSession } from '../../stores/authStore'
 
 export function RegisterPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const setSession = useAuth((s) => s.setSession)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -28,7 +27,7 @@ export function RegisterPage() {
     try {
       // §7: регистрация сразу выдаёт JWT — email-подтверждение не входит в продукт
       const res = await authApi.register({ name, email, password })
-      setSession(res.data)
+      await adoptSession(res.data)
       navigate('/', { replace: true })
     } catch (err) {
       const n = extractError(err)

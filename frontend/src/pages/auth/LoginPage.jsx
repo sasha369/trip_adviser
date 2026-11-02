@@ -7,12 +7,11 @@ import { TextField } from '../../components/ui/TextField'
 import { Alert } from '../../components/ui/Alert'
 import { authApi } from '../../api/authApi'
 import { extractError } from '../../api/client'
-import { useAuth } from '../../stores/authStore'
+import { adoptSession } from '../../stores/authStore'
 
 export function LoginPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const setSession = useAuth((s) => s.setSession)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [detail, setDetail] = useState(null)
@@ -26,7 +25,7 @@ export function LoginPage() {
     setSubmitting(true)
     try {
       const res = await authApi.login({ email, password })
-      setSession(res.data)
+      await adoptSession(res.data)
       navigate('/', { replace: true })
     } catch (err) {
       const n = extractError(err)

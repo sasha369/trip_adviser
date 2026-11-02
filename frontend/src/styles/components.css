@@ -1,0 +1,224 @@
+/* UI-примитивы по токенам design.md §6. Тёмная тема — основная; светлая переключается атрибутом. */
+
+/* --- Кнопки: touch-target ≥ 44px (design §7) --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font: var(--fs-label) / var(--lh-label) var(--font-sans);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    transform var(--motion-fast) var(--ease),
+    opacity var(--motion-fast) var(--ease),
+    background-color var(--motion-fast) var(--ease);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+.btn--secondary {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+}
+.btn--block {
+  width: 100%;
+}
+.btn__spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Поля ввода --- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.field__label {
+  color: var(--color-text);
+  font: 500 var(--fs-label) / var(--lh-label) var(--font-sans);
+}
+.field__input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font: var(--fs-body) / var(--lh-body) var(--font-sans);
+  transition: border-color var(--motion-fast) var(--ease);
+}
+.field__input::placeholder {
+  color: var(--color-text-muted);
+}
+.field--invalid .field__input {
+  border-color: var(--color-alert-border);
+}
+.field__error {
+  color: var(--color-alert-fg);
+  font: 500 var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+/* --- Alert-бокс: иконка + заголовок + текст, никогда не только цвет (P1) --- */
+.alert {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-4);
+}
+.alert--error {
+  background: var(--color-alert-bg);
+  border-color: var(--color-alert-border);
+  color: var(--color-alert-fg);
+}
+.alert--success {
+  background: color-mix(in srgb, var(--color-status-done) 14%, transparent);
+  border-color: var(--color-status-done);
+  color: var(--color-text);
+}
+.alert__icon {
+  line-height: var(--lh-heading);
+}
+
+/* --- Скелетоны (P7) --- */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-border) 60%, transparent),
+    transparent
+  );
+  animation: shimmer 1.4s var(--ease) infinite;
+}
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* --- Карточки / поверхности --- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elevation-card);
+}
+.auth-card {
+  width: min(420px, 100%);
+  margin: 0 auto;
+  padding: var(--space-6);
+}
+
+/* --- Шапка (design §2: постоянная верхняя шапка) --- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 64px;
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.header__brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+.header__logo {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: var(--fs-heading);
+  line-height: var(--lh-heading);
+}
+.header__section {
+  color: var(--color-text-muted);
+  font: 500 var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.header__user {
+  color: var(--color-text);
+  font: 500 var(--fs-label) / var(--lh-label) var(--font-sans);
+}
+
+.page {
+  padding: var(--space-6) var(--space-5);
+}
+.gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: var(--space-5);
+}
+
+/* --- S2 · список путешествий --- */
+.trips-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+.trips-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  max-width: 480px;
+  margin: 0 auto;
+}
+.trips-skeletons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+  max-width: 960px;
+  margin: 0 auto;
+}

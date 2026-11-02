@@ -224,3 +224,6 @@ __marimo__/
 .vscode
 .opencode
 docs
+# Node
+node_modules/
+.DS_Store

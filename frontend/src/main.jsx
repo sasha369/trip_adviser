@@ -44,4 +44,11 @@ function render() {
   )
 }
 
-enableMocking().then(render)
+enableMocking()
+  .then(render)
+  .catch((error) => {
+    // MSW не стартовал — не оставляем белый экран: рендерим приложение,
+    // оно честно покажет сетевые ошибки вместо/поверх моков.
+    console.error('[MSW] worker не стартовал:', error)
+    render()
+  })

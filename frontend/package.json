@@ -36,5 +36,10 @@
     "prettier": "^3.9.10",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

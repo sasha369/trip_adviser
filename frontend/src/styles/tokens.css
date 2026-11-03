@@ -1,0 +1,85 @@
+/*
+ * Design tokens — источник истины: docs/design.md §6.
+ * Тёмная тема — основная (:root), светлая — переключаемая ([data-theme='light']).
+ * Значения обязаны совпадать с таблицами §6 и переменными в docs/design/preview.html.
+ */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Color — dark */
+  --color-canvas: #0b1220;
+  --color-surface: #111c2e;
+  --color-surface-muted: #0e1728;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-border: #1e2a3c;
+  --color-primary: #2dd4bf;
+  --color-primary-contrast: #062421;
+  --color-focus: #60a5fa;
+  --color-status-planned: #94a3b8;
+  --color-status-active: #f59e0b;
+  --color-status-done: #4ade80;
+  --color-alert-fg: #fca5a5;
+  --color-alert-bg: #2a1414;
+  --color-alert-border: #f87171;
+
+  /* Typography */
+  --font-sans: ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --fs-display: 24px;
+  --lh-display: 32px;
+  --fs-heading: 18px;
+  --lh-heading: 26px;
+  --fs-body: 16px;
+  --lh-body: 1.45;
+  --fs-label: 14px;
+  --lh-label: 20px;
+  --fs-meta: 13px;
+  --lh-meta: 18px;
+
+  /* Spacing (база 4px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Radius: средний 6/12/16 */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  /* Elevation — тёмная */
+  --elevation-card: 0 1px 2px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --elevation-raised: 0 6px 18px rgba(0, 0, 0, 0.4);
+
+  /* Motion */
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+/* Light pair — переключаемая (design.md §6) */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --color-canvas: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-border: #e2e8f0;
+  --color-primary: #0f766e;
+  --color-primary-contrast: #ffffff;
+  --color-focus: #2563eb;
+  --color-status-planned: #64748b;
+  --color-status-active: #b45309;
+  --color-status-done: #15803d;
+  --color-alert-fg: #b91c1c;
+  --color-alert-bg: #fef2f2;
+  --color-alert-border: #dc2626;
+
+  --elevation-card: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.1);
+  --elevation-raised: 0 4px 12px rgba(15, 23, 42, 0.12);
+}

@@ -1,0 +1,76 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Типографика (design.md §6) */
+.t-display {
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  font-weight: 700;
+}
+.t-heading {
+  font-size: var(--fs-heading);
+  line-height: var(--lh-heading);
+  font-weight: 600;
+}
+.t-body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: 400;
+}
+.t-label {
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  font-weight: 500;
+}
+.t-meta {
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Видимое фокус-кольцо на всех интерактивных элементах (design.md §7) */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Порядок табуляции задаётся разметкой; reduced-motion — отключить переходы (§7) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

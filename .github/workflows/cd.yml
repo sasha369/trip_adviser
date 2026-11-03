@@ -1,0 +1,82 @@
+name: Development
+
+on:
+    push:
+        tags: ["v*.*.*"]
+
+env:
+    REGISTRY: ghcr.io
+
+jobs:
+    build-push:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses : docker/setup-buildx-action@v3
+
+            - name: Login to ghcr.io
+              uses: docker/login-action@v3
+              with:
+                registry: ${{ env.REGISTRY }}
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Frontend image tags
+              id: fe_meta
+              uses: docker/metadata-action@v5
+              with:
+                images: ${{ env.REGISTRY }}/${{ github.repository_owner  }}/tripadv-frontend
+                tags: |
+                    type=ref,event=tag
+                    type=raw,value=latest
+
+            - name: Build and push frontend
+              uses: docker/build-push-action@v6
+              with:
+                context: ./frontend
+                push: true
+                tags: ${{ steps.fe_meta.outputs.tags }}
+                labels: ${{ steps.fe_meta.outputs.labels }}
+                cache-from: type=gha
+                cache-to: type=gha,mode=max
+
+            - name: Backend image tags
+              id: be_meta
+              uses: docker/metadata-action@v5
+              with:
+                images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/tripadv-backend
+                tags: |
+                    type=ref,event=tag
+                    type=raw,value=latest
+
+            - name: Build and push backend
+              uses: docker/build-push-action@v6
+              with:
+                context: .
+                file: main_app/Dockerfile
+                push: true
+                tags: ${{ steps.be_meta.outputs.tags }}
+                labels: ${{ steps.be_meta.outputs.labels }}
+                cache-from: type=gha
+                cache-to: type=gha,mode=max
+
+    deploy:
+        runs-on: ubuntu-latest
+        needs: [build-push]
+        steps:
+            - name: Deplot to VM
+              uses: appleboy/ssh-action@v1
+              with:
+                host: ${{ secrets.SSH_HOST }}
+                username: ${{ secrets.SSH_USER }}
+                key: ${{ secrets.SSH_PRIVATE_KEY }}
+                script: |
+                    cd /opt/trip_adviser
+                    git pull
+                    docker compose pull
+                    docker compose up -d --remove-orphans
+                    docker image prune -f

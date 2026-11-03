@@ -1,0 +1,68 @@
+services:
+  nginx:
+    build: ./frontend
+    ports:
+    - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - media:/var/www/media:ro
+  
+  backend:
+    build:
+      context: .
+      dockerfile: main_app/Dockerfile
+    volumes:
+      - media:/app/media
+      - static:/app/static
+    environment:
+      DJANGO_SECRET: ${DJANGO_SECRET}
+      DEBUG: "0"
+      ALLOWED_HOSTS: "localhost,127.0.0.1"
+      DB_NAME: ${DB_NAME:-django_db}
+      DB_USER: ${DB_USER:-user_db}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: db
+      DB_PORT: "5432"
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "8000"
+
+# Раскомментировать после настройки CELERY_BROKER_URL в settings.py
+  # worker:
+  #   build:
+  #     context: .
+  #     dockerfile: main_app/Dockerfile
+  #   command: celery -A backend worker -l info
+
+  # beat:
+  #   command: celery -A backend beat -l info
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-django_db}
+      POSTGRES_USER: ${DB_USER:-user_db}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD_SHELL", "pg_isready -U ${DB_USER:-user_db} -d ${DB_NAME:-django_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
+  media:
+  static:

@@ -104,16 +104,16 @@ DATABASES = {
     }
 }
 
-"""DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "django_db"),
-        "USER": os.environ.get("DB_USER", "user_db"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "fake"),
-        "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
-    }
-}"""
+# DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.postgresql",
+#        "NAME": os.environ.get("DB_NAME", "django_db"),
+#        "USER": os.environ.get("DB_USER", "user_db"),
+#        "PASSWORD": os.environ.get("DB_PASSWORD", "fake"),
+#        "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
+#        "PORT": os.environ.get("DB_PORT", "5432"),
+#    }
+# }
 
 
 # Password validation
@@ -156,7 +156,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_ROT = BASE_DIR / "media"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

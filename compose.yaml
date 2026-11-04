@@ -9,12 +9,12 @@ services:
       - backend
     volumes:
       - media:/var/www/media:ro
-      - static:/usr/sahre/nginx/static:ro
-      - certbot-conf:/etc/letsencrypt:ro
-      - certbot-www:/var/www/certbot:ro
+      - static:/usr/share/nginx/static:ro
+      - certbotconf:/etc/letsencrypt:ro
+      - certbotwww:/var/www/certbot:ro
   
   backend:
-    image: ghcr.io/sasha369/tripadv=backend:latest
+    image: ghcr.io/sasha369/tripadv-backend:latest
     build:
       context: .
       dockerfile: main_app/Dockerfile
@@ -26,6 +26,7 @@ services:
       DEBUG: "0"
       ALLOWED_HOSTS: "localhost,127.0.0.1"
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS}
+      DB_ENGINE: django.db.backends.postgresql
       DB_NAME: ${DB_NAME:-django_db}
       DB_USER: ${DB_USER:-user_db}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -73,7 +74,7 @@ services:
     image: certbot/certbot
     volumes:
       - certbotconf:/etc/letsencrypt
-      - certbot-www:/var/www/certbot
+      - certbotwww:/var/www/certbot
     entrypoint: >-
       /bin/sh -c 'trap exit TERM;
         while :; do certbot renew --webroot -w /var/www/certbot --quiet;
@@ -83,5 +84,5 @@ volumes:
   db-data:
   media:
   static:
-  certbot-conf:
-  certbot-www:
+  certbotconf:
+  certbotwww:

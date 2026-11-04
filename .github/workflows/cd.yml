@@ -61,6 +61,8 @@ jobs:
                 push: true
                 tags: ${{ steps.be_meta.outputs.tags }}
                 labels: ${{ steps.be_meta.outputs.labels }}
+                build-args: |
+                  REQUIREMENTS_FILE=prod.txt
                 cache-from: type=gha
                 cache-to: type=gha,mode=max
 
@@ -77,6 +79,9 @@ jobs:
                 script: |
                     cd /opt/trip_adviser
                     git pull
+
+                    echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
                     docker compose pull
                     docker compose up -d --remove-orphans
                     docker image prune -f

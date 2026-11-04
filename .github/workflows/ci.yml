@@ -93,4 +93,4 @@ jobs:
               run: docker build -t tripadv-frontend ./frontend
 
             - name: Build backend image
-              run: docker build -t tripadv-backend -f main_app/Dockerfile .
+              run: docker build --build-arg REQUIREMENTS_FILE=prod.txt -t tripadv-backend -f main_app/Dockerfile .

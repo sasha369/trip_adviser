@@ -7,10 +7,23 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY main_app/ /app/
+ARG REQUIREMENTS_FILE=dev.txt
 
 COPY requirements/ requirements/
-RUN pip install --no-cache-dir -r requirements/prod.txt
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && pip install --no-cache-dir -r requirements/${REQUIREMENTS_FILE} \
+    # Удаляем gcc после сборки пакетов, чтобы уменьшить образ, но оставляем libpq-dev
+    && apt-get purge -y --auto-remove gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY . /app/
+
+WORKDIR /app/main_app
+
+USER root
+RUN chmod +x ./entrypoint.sh
 
 # Некорневой пользователь; media/static должны быть ему доступны
 RUN adduser --disabled-password --gecos "" --no-create-home appuser \

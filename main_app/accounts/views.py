@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from core.views import OwnedViewSet
+from django.shortcuts import get_object_or_404
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
+from .models import User
+
+# class AccountRegisterView(generics.CreateAPIView):

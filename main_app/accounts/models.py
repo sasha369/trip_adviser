@@ -1,34 +1,26 @@
 import uuid
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-
-class UsernameValidator(UnicodeUsernameValidator):
-    """Как стандартный, но без «@»: LoginView по нему отличает почту от логина."""
-
-    regex = r"^[\w.+-]+\Z"
-    message = _("Username can only consist of letters, number and symbols . + - _")
 
 
 class User(AbstractUser):
     """Базовый пользователь, почта - уникальна."""
 
+    username = None
     email = models.EmailField(
         _("email"),
         unique=True,
         error_messages={"unique": _("User with this email already exists.")},
     )
+    name = models.CharField(_("name"), max_length=150)
 
-    name = models.CharField(
-        _("name"),
-        unique=True,
-        validators=[UsernameValidator()],
-        error_messages={"unique": _("User with this name already exists")},
-    )
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["name"]
+
+    objects = UserManager()
 
     class Meta:  # noqa: D106
         verbose_name = _("User")

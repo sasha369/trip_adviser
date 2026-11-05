@@ -32,6 +32,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: db
       DB_PORT: "5432"
+      STATIC_ROOT: "/app/static"
+      MEDIA_ROOT: "/app/media"
     depends_on:
       db:
         condition: service_healthy

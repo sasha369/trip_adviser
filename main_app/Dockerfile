@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.12-slim as base
+FROM python:3.12-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -11,11 +11,11 @@ ARG REQUIREMENTS_FILE=dev.txt
 
 COPY requirements/ requirements/
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
+    build-essential \
     libpq-dev \
     && pip install --no-cache-dir -r requirements/${REQUIREMENTS_FILE} \
-    # Удаляем gcc после сборки пакетов, чтобы уменьшить образ, но оставляем libpq-dev
-    && apt-get purge -y --auto-remove gcc \
+    # Удаляем build-essential после сборки пакетов, чтобы уменьшить образ, но оставляем libpq-dev
+    && apt-get purge -y --auto-remove build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /app/

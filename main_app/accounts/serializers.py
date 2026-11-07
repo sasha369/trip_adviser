@@ -3,7 +3,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 
-from .models import User, Traveler
+from .models import Traveler, User
 
 
 class _EmailValidationMixin:
@@ -12,26 +12,31 @@ class _EmailValidationMixin:
 
 
 class UserSerializer(_EmailValidationMixin, serializers.ModelSerializer):
+    name = serializers.CharField(source="username")
+
     class Meta:
         model = User
-        fields = ["id", "email", "username"]
+        fields = ["id", "email", "name"]
         read_only_fields = ["id"]
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=150, write_only=True)
     password = serializers.CharField(
-        min_length=8, trim_whitespace=False, style={"input_type": "password"}
+        min_length=8,
+        trim_whitespace=False,
+        style={"input_type": "password"},
+        write_only=True,
     )
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        name = validated_data.pop("name")
+        return User.objects.create_user(username=name, **validated_data)
 
     def validate_email(self, value):
         value = value.strip().lower()
         if User.objects.filter(email__iexact=value).exists():
-            raise serializers.ValidationError(
-                {"email": "Этот email уже зарегистрирован"}
-            )
+            raise serializers.ValidationError("Этот email уже зарегистрирован")
         return value
 
     def validate_password(self, value):
@@ -40,7 +45,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password"]
+        fields = ["name", "email", "password"]
 
 
 class LoginSerializer(_EmailValidationMixin, serializers.Serializer):

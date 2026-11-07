@@ -5,7 +5,7 @@ from rest_framework.views import exception_handler as drf_handler
 class DomainError(APIException):
     status_code = 422
 
-    def __init__(self, detail: str, code: str, fields: dict | None = None):
+    def __init__(self, code: str, detail: str, fields: dict | None = None):
         self.domain_code = code
         self.fields = fields or {}
         super().__init__(detail=detail)

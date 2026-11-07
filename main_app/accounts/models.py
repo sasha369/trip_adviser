@@ -9,16 +9,12 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     """Базовый пользователь, почта - уникальна."""
 
-    username = None
+    username = models.CharField(_("name"), max_length=150)
     email = models.EmailField(
         _("email"),
         unique=True,
         error_messages={"unique": _("User with this email already exists.")},
     )
-    name = models.CharField(_("name"), max_length=150)
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["name"]
 
     objects = UserManager()
 

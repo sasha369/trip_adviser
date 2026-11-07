@@ -1,4 +1,4 @@
-from core.exceptions import DomainError
+from core.exceptions import AuthError
 from core.views import OwnedViewSet
 from django.conf import settings
 from django.contrib.auth import authenticate
@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import generics, status, views
-from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
@@ -60,7 +60,10 @@ class AccountLoginView(views.APIView):
         data = serializer.validated_data
         user = authenticate(request, email=data["email"], password=data["password"])
         if user is None:
-            raise AuthenticationFailed("Неверный email или пароль")
+            raise AuthError(
+                code="invalid_credentials",
+                detail="Неверный email или пароль",
+            )
         refresh = RefreshToken.for_user(user)
         return Response(
             {
@@ -84,10 +87,7 @@ class PasswordResetRequestView(views.APIView):
         data = serializer.validated_data
         user = User.objects.filter(email__iexact=data["email"]).first()
         if user is None:
-            raise ValidationError(
-                code="email_not_found",
-                detail="Пользователь с таким email не найден",
-            )
+            raise ValidationError({"email": "Пользователь с таким email не найден"})
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
         reset_token = f"{uid}:{token}"

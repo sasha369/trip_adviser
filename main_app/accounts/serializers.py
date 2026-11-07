@@ -1,4 +1,5 @@
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
@@ -41,7 +42,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = User(email=attrs["email"], username=attrs["name"])
-        validate_password(attrs["password"], user=user)
+        try:
+            validate_password(attrs["password"], user=user)
+        except DjangoValidationError as exc:
+            # ошибки пароля должны прийти в fields.password, а не в non_field_errors
+            raise serializers.ValidationError({"password": list(exc.messages)}) from exc
         return attrs
 
     class Meta:

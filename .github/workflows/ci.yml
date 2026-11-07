@@ -63,7 +63,8 @@ jobs:
               run: pip install -r requirements/dev.txt
 
             - name: Check migrations
-              run: python main_app/manage.py makemigrations --check --dry-run
+              run: python manage.py makemigrations --check --dry-run
+              working-directory: main_app
               env:
                     DJANGO_SECRET: ci-secret
                     DB_ENGINE: django.db.backends.postgresql
@@ -74,7 +75,8 @@ jobs:
                     DB_PORT: 5432
 
             - name: Test
-              run: python main_app/manage.py test
+              run: python manage.py test
+              working-directory: main_app
               env:
                 DJANGO_SECRET: ci-secret
                 DB_ENGINE: django.db.backends.postgresql

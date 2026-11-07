@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     """Базовый пользователь, почта - уникальна."""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(_("name"), max_length=150)
     email = models.EmailField(
         _("email"),

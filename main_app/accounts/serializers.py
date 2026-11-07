@@ -39,9 +39,10 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Этот email уже зарегистрирован")
         return value
 
-    def validate_password(self, value):
-        validate_password(value)
-        return value
+    def validate(self, attrs):
+        user = User(email=attrs["email"], username=attrs["name"])
+        validate_password(attrs["password"], user=user)
+        return attrs
 
     class Meta:
         model = User
@@ -62,7 +63,10 @@ class PasswordResetRequestSerializer(_EmailValidationMixin, serializers.Serializ
 class PasswordResetConfirmSerializer(_EmailValidationMixin, serializers.Serializer):
     token = serializers.CharField(max_length=256, trim_whitespace=True)
     password = serializers.CharField(
-        min_length=8, trim_whitespace=False, style={"input_type": "password"}
+        min_length=8,
+        trim_whitespace=False,
+        style={"input_type": "password"},
+        write_only=True,
     )
 
     def validate_password(self, value):

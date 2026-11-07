@@ -16,6 +16,9 @@ class User(AbstractUser):
         error_messages={"unique": _("User with this email already exists.")},
     )
 
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
+
     objects = UserManager()
 
     class Meta:  # noqa: D106
@@ -23,7 +26,7 @@ class User(AbstractUser):
         verbose_name_plural = _("Users")
 
     def __str__(self) -> str:
-        return str(self.name)
+        return str(self.username)
 
 
 class Traveler(models.Model):

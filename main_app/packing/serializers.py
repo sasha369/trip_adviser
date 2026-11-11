@@ -9,9 +9,16 @@ class PackingItemSerializer(serializers.ModelSerializer):
         fields = ["id", "trip", "name", "category", "is_important", "is_packed"]
         read_only_fields = ["id", "trip"]
 
+class PackingTemplateItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PackingTemplateItem
+        fields = ["id", "name", "category", "is_important"]
+        read_only_fields = ["id"]
+
+
 
 class PackingTemplateSerializer(serializers.ModelSerializer):
-    items = PackingTemplateItem(many=True)
+    items = PackingTemplateItemSerializer(many=True)
 
     class Meta:
         model = PackingTemplate
@@ -35,10 +42,3 @@ class PackingTemplateSerializer(serializers.ModelSerializer):
                 [PackingTemplateItem(template=instance, **item) for item in items_data]
             )
         return instance
-
-
-class PackingTemplateItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PackingTemplateItem
-        fields = ["id", "name", "category", "is_important"]
-        read_only_fields = ["id"]
